@@ -25,6 +25,13 @@ package body logic is
     end if;
   end Update_Direction;
 --------------------------------------------------------------------------------
+  procedure Init_Snake(Snake : in out Snake_Position_Type) is
+  begin
+    for I in 1..Snake'Length loop
+      Snake(I)(1) := 0;
+      Snake(I)(2) := 0;
+    end loop;
+  end Init_Snake;
 --------------------------------------------------------------------------------
   procedure Check_Exit_Game(Key : in Key_Type; Running : out Boolean) is
   begin
@@ -35,16 +42,32 @@ package body logic is
     end if;
   end Check_Exit_Game;
 --------------------------------------------------------------------------------
+  function Random_Coordinate(StartX, StartY, Width, Height : in Integer) return Random_Array_Type is
+    Random_Cords         : Random_Array_Type;
+    Random_X, Random_Y   : Integer;
+    Uniform_X, Uniform_Y : Float;
+    X_MIN, X_MAX         : Float;
+    Y_MIN, Y_MAX         : Float;
+    -- This should be a paramater with scaling.
+    Size_Of_Water : Integer := 2;
+    G : Ada.Numerics.Float_Random.Generator;
+  begin
+    Ada.Numerics.Float_Random.Reset(G);
 
-  -- function Random_Coordinate(StartX, StartY, Width, Height : in Integer) return Random_Array_Type is
-  --   Random_Cords         : Random_Array_Type;
-  --   Random_X, Random_Y   : Integer;
-  --   Uniform_X, Uniform_Y : Float;
-  --
-  --   Size_Of_Water : Integer := 2;
-  -- begin
-  --   return Null;
-  -- end Random_Coordinate;
+    Uniform_X := Ada.Numerics.Float_Random.Random(G);
+    Uniform_Y := Ada.Numerics.Float_Random.Random(G);
 
+    X_MIN := Float(StartX + Size_Of_Water);
+    X_MAX := Float(StartX + Width - 2*Size_Of_Water);
+    Y_MIN := Float(StartY + Size_Of_Water);
+    Y_MAX := Float(StartY + Height - 2*Size_Of_Water);
 
+    Random_X := Integer((X_MAX - X_MIN)*Uniform_X + X_MIN);
+    Random_Y := Integer((Y_MAX - Y_MIN)*Uniform_Y + Y_MIN);
+
+    Random_Cords(1) := Random_X;
+    Random_Cords(2) := Random_Y;
+    return Random_Cords;
+  end Random_Coordinate;
+--------------------------------------------------------------------------------
 end logic;

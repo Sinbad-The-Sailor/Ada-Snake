@@ -2,8 +2,8 @@ package body graphics is
 --------------------------------------------------------------------------------
   procedure Transform_To_Graphical(X_Pos, Y_pos : in Integer; G_X, G_Y : out Integer) is
   begin
-    G_X := X_Pos*Scaling_Factor;
-    G_Y := Y_Pos*Scaling_Factor;
+    G_X := X_Pos*Scaling_Factor + 40;
+    G_Y := Y_Pos*Scaling_Factor + 10;
   end Transform_To_Graphical;
 --------------------------------------------------------------------------------
   procedure Get_Picture_Dimensions(File_Name : in String; X_Dim, Y_Dim : out Integer) is
@@ -98,6 +98,20 @@ package body graphics is
     Put_Middle_Bushes(Org_X, Org_Y);
     Put_Middle_Bushes(Right_X, Org_Y);
   end Put_Bushes;
+--------------------------------------------------------------------------------
+  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height : in Integer; Running : out Boolean) is
+    Size_Of_Water : Integer := 2;
+    Background_Start_X : Integer := 40;
+    Background_Start_Y : Integer := 10;
+  begin
+    if (X_Gra <= Size_Of_Water + Background_Start_X or X_Gra >= Width - 2*Size_Of_Water) or
+       (Y_Gra <= Size_Of_Water + Background_Start_Y or Y_Gra >= Height - 2*Size_Of_Water) then
+         Running := False;
+    else
+         Running := True;
+    end if;
+  end Check_Out_Of_Bounds;
+
 --------------------------------------------------------------------------------
   procedure Setup_Terminal is
   begin

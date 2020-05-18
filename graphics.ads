@@ -19,7 +19,10 @@ package graphics is
   procedure Load_Picture(File_Name : in String; Picture : out Picture_Type);
   procedure Put_Picture(Picture : in Picture_Type; X_Pos, Y_Pos, X_Range, Y_Range : in Integer);
 
+
+  
   procedure Put_Bushes(Picture : in Picture_Type; Background_Start_X, Background_Start_Y, Width, Height : in Integer);
+  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height : in Integer; Running : out Boolean);
   procedure Setup_Terminal;
   procedure Exit_Game;
 --------------------------------------------------------------------------------
