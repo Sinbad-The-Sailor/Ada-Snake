@@ -62,6 +62,28 @@ package body graphics is
     Reset_Colours;
   end Put_Picture;
 --------------------------------------------------------------------------------
+  procedure Fix_Picture(Picture : in Picture_Type; X_Pos, Y_Pos, X_Range, Y_Range : in Integer) is
+    Temp_Color   : Colour_Type;
+    Temp_Integer : Integer;
+    Temp_X_Pos   : Integer := X_Pos;
+    Org_X        : Integer := X_Pos;
+    Org_Y        : Integer := Y_Pos;
+  begin
+    for I in 1..Y_Range loop
+      for J in 1..X_Range loop
+        Goto_XY(Org_X, Org_Y);
+        Temp_Integer := Picture(Org_Y, Org_X);
+        Temp_Color   := Colour_Type'Val(Temp_Integer);
+        Set_Background_Colour(Temp_Color);
+        Put(" ");
+        Org_X := Org_X + 1;
+      end loop;
+      New_Line;
+      Org_X := Temp_X_Pos;
+      Org_Y := Org_Y + 1;
+    end loop;
+  end Fix_Picture;
+--------------------------------------------------------------------------------
   procedure Put_Bushes(Picture : in Picture_Type; Background_Start_X, Background_Start_Y, Width, Height : in Integer) is
     Org_X : Integer := Background_Start_X;
     Org_Y : Integer := Background_Start_Y;
@@ -99,7 +121,7 @@ package body graphics is
     Put_Middle_Bushes(Right_X, Org_Y);
   end Put_Bushes;
 --------------------------------------------------------------------------------
-  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height : in Integer; Running : out Boolean) is
+  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height : in Integer; Running : in out Boolean) is
     Size_Of_Water : Integer := 2;
     Background_Start_X : Integer := 40;
     Background_Start_Y : Integer := 10;
@@ -107,8 +129,6 @@ package body graphics is
     if (X_Gra <= Size_Of_Water + Background_Start_X or X_Gra >= Width - 2*Size_Of_Water) or
        (Y_Gra <= Size_Of_Water + Background_Start_Y or Y_Gra >= Height - 2*Size_Of_Water) then
          Running := False;
-    else
-         Running := True;
     end if;
   end Check_Out_Of_Bounds;
 

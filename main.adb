@@ -3,7 +3,7 @@
 -- with Ada.Integer_Text_IO;       use Ada.Integer_Text_IO;
 -- TJa. Libraries
 with TJa.Keyboard;              use TJa.Keyboard;
-with TJa.Window.Elementary;             use TJa.Window.Elementary;
+with TJa.Window.Elementary;     use TJa.Window.Elementary;
 
 -- Internal Libraries
 with logic;                     use logic;
@@ -17,9 +17,10 @@ procedure main is
   GX, GY       : Integer;
   PreX, PreY   : Integer;
   Snake_Length : Integer;
+  Score        : Integer;
+  Name         : String(1..3);
 
-
-  Snake_Position : Snake_Position_Type(1..100);
+  Snake_Position : Snake_Position_Type(1..1000);
   Fruit_Position : Random_Array_Type;
 
   Game_Width         : constant Integer := 320;
@@ -44,7 +45,8 @@ begin
   Running := True;
   PosX    := 5;
   PosY    := 5;
-  Speed   := 0.50;
+  Speed   := 0.10;
+  Score   := 0;
   Snake_Length := 5;
   Init_Snake(Snake_Position);
   Fruit_Position := Random_Coordinate(Background_Start_X, Background_Start_Y, Game_Width, Game_Height);
@@ -77,7 +79,6 @@ procedure Tick is
   Temp_X, Temp_Y : Integer;
 begin
   Get_Immediate(Key, Key_Pressed);
-  Check_Exit_Game(Key, Running);
   Update_Direction(Key);
   Update_Position(PosX, PosY);
 
@@ -93,8 +94,15 @@ begin
     PreY := Temp_Y;
   end loop;
 
+   if Snake_Length > 5 then
+    Check_Snake_Intersection(Snake_Length, Snake_Position, Running);
+   end if;
 
-
+   if Check_Fruit(2*PosX+40, 2*PosY+10, Snake_X, Snake_Y, Fruit_X, Fruit_Y, Fruit_Position) = True then
+     Speed        := Speed - 0.01;
+     Snake_Length := Snake_Length + 1;
+     Score        := Score + 10;
+   end if;
 end Tick;
 --------------------------------------------------------------------------------
 procedure Render is
@@ -105,18 +113,42 @@ begin
   Game_Width_Transformed := Game_Width + 40;
   Game_Height_Transformed := Game_Height + 10;
 
-
   Put_Picture(Snake_Piece_Image, GX, GY, Snake_X, Snake_Y);
+  Fix_Picture(Background_Image, PreX*2+40, PreY*2+10, Snake_X, Snake_Y);
   Check_Out_Of_Bounds(GX, GY, Game_Width_Transformed, Game_Height_Transformed, Running);
+
+
+  if Check_Fruit(2*PosX+40, 2*PosY+10, Snake_X, Snake_Y, Fruit_X, Fruit_Y, Fruit_Position) = True then
+    Fix_Picture(Background_Image, Fruit_Position(1), Fruit_Position(2), Fruit_X, Fruit_Y);
+    Fruit_Position := Random_Coordinate(Background_Start_X, Background_Start_Y, Game_Width, Game_Height);
+    Put_Picture(Fruit_Image, Fruit_Position(1), Fruit_Position(2), Fruit_X, Fruit_Y);
+  end if;
 end Render;
 --------------------------------------------------------------------------------
 begin
   Init_Logic;
   Init_Graphics;
-  while Running loop
+  while Running = True loop
     delay Speed;
     Tick;
     Render;
   end loop;
+
+  -- Last_Score := Highscore(3).Score;
+  -- if New_Score > Last_Score then
+  --   Add_Score(New_Score);
+  --   Sort_Score(Highscore);
+  --   Put("Du kom med!");
+  -- else
+  --   Put("Du suger!");
+  -- end if;
+
+
+  -- Display_highscores
+
+  --Skriv till filen.
+
+
+
   Exit_Game;
 end main;
