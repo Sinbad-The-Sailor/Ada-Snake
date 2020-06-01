@@ -72,7 +72,9 @@ package body graphics is
     for I in 1..Y_Range loop
       for J in 1..X_Range loop
         Goto_XY(Org_X, Org_Y);
-        Temp_Integer := Picture(Org_Y, Org_X);
+        Temp_Integer := Picture(Integer(Float(Org_Y/2)+10.0), Integer(Float(Org_X/2)+40.0));
+--        Temp_Integer := Picture(Integer(Float(Org_Y)-40.0), Integer(Float(Org_X)-10.0));
+--        Temp_Integer := Picture(Org_Y, Org_X);
         Temp_Color   := Colour_Type'Val(Temp_Integer);
         Set_Background_Colour(Temp_Color);
         Put(" ");
@@ -121,8 +123,7 @@ package body graphics is
     Put_Middle_Bushes(Right_X, Org_Y);
   end Put_Bushes;
 --------------------------------------------------------------------------------
-  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height : in Integer; Running : in out Boolean) is
-    Size_Of_Water : Integer := 2;
+  procedure Check_Out_Of_Bounds(X_Gra, Y_Gra, Width, Height, Size_Of_Water : in Integer; Running : in out Boolean) is
     Background_Start_X : Integer := 40;
     Background_Start_Y : Integer := 10;
   begin
@@ -131,7 +132,6 @@ package body graphics is
          Running := False;
     end if;
   end Check_Out_Of_Bounds;
-
 --------------------------------------------------------------------------------
   procedure Setup_Terminal is
   begin
@@ -139,6 +139,33 @@ package body graphics is
     Set_Echo_Mode(Off);
     Cursor_Invisible;
   end Setup_Terminal;
+--------------------------------------------------------------------------------
+  procedure Start_Up_Screen(Name : out String) is
+  begin
+    Set_Background_Colour(White);
+    Put_Line("THIS IS ADA SNAKE!");
+    Put("ENTER YOUR NAME: ");
+    Get(Name);
+    Skip_Line;
+    Reset_Colours_And_Text_Modes;
+  end Start_Up_Screen;
+--------------------------------------------------------------------------------
+  procedure Put_End_Screen(X_Start, Y_Start, X_Range, Y_Range : in Integer) is
+    Org_X : Integer := X_Start;
+    Org_Y : Integer := Y_Start;
+    Temp_X : Integer := X_Start;
+  begin
+    Set_Background_Colour(White);
+    for I in 1..Y_Range loop
+      for J in 1..X_Range loop
+        Goto_XY(Org_X, Org_Y);
+        Put(" ");
+        Org_X := Org_X + 1;
+      end loop;
+      Org_X := Temp_X;
+      Org_Y := Org_Y + 1;
+    end loop;
+  end Put_End_Screen;
 --------------------------------------------------------------------------------
   procedure Exit_Game is
   begin

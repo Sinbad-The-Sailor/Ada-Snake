@@ -50,6 +50,78 @@ package body logic is
       Running := True;
     end if;
   end Check_Exit_Game;
+--------------------------------------------------------------------------------
+  procedure Read_Highscore(File_Name : in String; Highscore_List : out Highscore_List_Type) is
+    File         : File_Type;
+    Temp_String  : String(1..3);
+    Temp_Integer : Integer;
+    I            : Integer := 1;
+  begin
+    Open(File, In_File, File_Name);
+    while not End_Of_File(File) loop
+      Get(File, Temp_String);
+      Get(File, Temp_Integer);
+      Highscore_List(I).Name  := Temp_String;
+      Highscore_List(I).Score := Temp_Integer;
+      I := I + 1;
+    end loop;
+    Close(File);
+  end Read_Highscore;
+  --------------------------------------------------------------------------------
+  procedure Add_Score(New_Name : in String; New_Score : in Integer; Highscore_List : out Highscore_List_Type) is
+    Last : Integer := Highscore_List'Last;
+  begin
+    Highscore_List(Last).Name  := New_Name;
+    Highscore_List(Last).Score := New_Score;
+  end Add_Score;
+--------------------------------------------------------------------------------
+  procedure Write_Highscore(File_Name : in String; Highscore_List : in Highscore_List_Type) is
+    File : File_Type;
+    Last : Integer := Highscore_List'Last;
+  begin
+    Open(File, Out_File, File_Name);
+    for I in 1..Last loop
+      Put(File, Highscore_List(I).Name);
+      Put(File, " ");
+      Put(File, Highscore_List(I).Score, Width => 0);
+      New_Line(File);
+    end loop;
+  end Write_Highscore;
+--------------------------------------------------------------------------------
+  procedure Swap_Scores(New_Score, Old_Score : in out Score_Type) is
+    Temp_Score : Score_Type;
+  begin
+    Temp_Score := New_Score;
+    New_Score  := Old_Score;
+    Old_Score  := Temp_Score;
+  end Swap_Scores;
+--------------------------------------------------------------------------------
+  procedure Sort_Scores(Highscore_List : in out Highscore_List_Type) is
+  begin
+    for I in Highscore_List'First + 1 .. Highscore_List'Last loop
+        for J in reverse I..Highscore_List'Last loop
+          if Highscore_List(J).Score >= Highscore_List(J-1).Score then
+            Swap_Scores(Highscore_List(J), Highscore_List(J-1));
+          end if;
+        end loop;
+    end loop;
+  end Sort_Scores;
+--------------------------------------------------------------------------------
+  procedure Put_Highscore(X_Placement, Y_Placement : in Integer; Highscore_List : in Highscore_List_Type) is
+    Org_X : Integer := X_Placement;
+    Org_Y : Integer := Y_Placement;
+  begin
+    Goto_XY(Org_X, Org_Y);
+    Put_Line("HIGHSCORES!");
+    for I in Highscore_List'Range loop
+      Goto_XY(Org_X, Org_Y + I);
+      Put(I, Width => 1);
+      Put(" ");
+      Put(Highscore_List(I).Name);
+      Put(" ");
+      Put(Highscore_List(I).Score, Width => 0);
+    end loop;
+  end Put_Highscore;
 -------------------------------------------------------------------------------
   procedure Fill_Matrix(X, Y, Size_X, Size_Y : in Integer; Matrix : out Coordinate_Matrix) is
     Temp_X : Integer := X;
@@ -98,14 +170,12 @@ package body logic is
     return False;
   end Check_Fruit;
 --------------------------------------------------------------------------------
-  function Random_Coordinate(StartX, StartY, Width, Height : in Integer) return Random_Array_Type is
+  function Random_Coordinate(StartX, StartY, Width, Height, Size_Of_Water : in Integer) return Random_Array_Type is
     Random_Cords         : Random_Array_Type;
     Random_X, Random_Y   : Integer;
     Uniform_X, Uniform_Y : Float;
     X_MIN, X_MAX         : Float;
     Y_MIN, Y_MAX         : Float;
-    -- This should be a paramater with scaling.
-    Size_Of_Water : Integer := 2;
     G : Ada.Numerics.Float_Random.Generator;
   begin
     Ada.Numerics.Float_Random.Reset(G);
@@ -114,9 +184,9 @@ package body logic is
     Uniform_Y := Ada.Numerics.Float_Random.Random(G);
 
     X_MIN := Float(StartX + Size_Of_Water);
-    X_MAX := Float(StartX + Width - 2*Size_Of_Water);
+    X_MAX := Float(StartX + Width - 4*Size_Of_Water);
     Y_MIN := Float(StartY + Size_Of_Water);
-    Y_MAX := Float(StartY + Height - 2*Size_Of_Water);
+    Y_MAX := Float(StartY + Height - 4*Size_Of_Water);
 
     Random_X := Integer((X_MAX - X_MIN)*Uniform_X + X_MIN);
     Random_Y := Integer((Y_MAX - Y_MIN)*Uniform_Y + Y_MIN);
