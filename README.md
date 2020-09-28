@@ -1,2 +1,16 @@
 # Ada-Snake
-A simple game in Ada.
+The classic game snake recreated in Ada for an introductory course in programming at my university. The game is written with a proprietary library TJa which enables one to use graphics in the terminal. This library has been kept out of the git repository when made public, as it is owned by the university. 
+
+The game is written such that the logical and graphical components of the game are separate, as per usual standard in games. This also means the game can easily be modified or expanded. 
+
+# Pictures 
+
+# Scope
+Because of the time constraints of the project it was most important to make sure the program was made such that it could easily be modified or expanded. With this said, the game still functions as one expecteds Snake to function. There is also a highscore mechanic implemented, however, it is limited in many aspects. 
+
+# Commands
+To compile the program with the TJa library one must run the following command:
+```
+gnatmake -I/path/TJa main.adb 
+```
+I usually add -q afterwards in the same command. "-q" stands for quite compilation and is prefered since it does not clutter the terminal which is important since the game is played inside the terminal window.
