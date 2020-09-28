@@ -9,9 +9,19 @@ The game is written such that the logical and graphical components of the game a
 # Scope
 Because of the time constraints of the project it was most important to make sure the program was made such that it could easily be modified or expanded. With this said, the game still functions as one expecteds Snake to function. There is also a highscore mechanic implemented, however, it is limited in many aspects. 
 
+Note: the game is only playable on a Linux based system.
+
 # Commands
-To compile the program with the TJa library one must run the following command:
+If one has access to the TJa library, compiling the program is done by running the following command:
 ```
 gnatmake -I/path/TJa main.adb 
 ```
-I usually add -q afterwards in the same command. "-q" stands for quite compilation and is prefered since it does not clutter the terminal which is important since the game is played inside the terminal window.
+Then running the program.
+```
+./main 
+```
+Finally, removing the compiled extraneous files after the game has been played with:
+```
+gnatclean main.adb 
+```
+I usually add -q afterwards in the first command. "-q" stands for quite compilation and is prefered since it does not clutter the terminal which is important since the game is played inside the terminal window.
