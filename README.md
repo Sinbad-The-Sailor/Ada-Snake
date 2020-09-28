@@ -24,4 +24,4 @@ Finally, removing the compiled extraneous files after the game has been played:
 ```
 gnatclean main.adb 
 ```
-I usually add -q afterwards in the first command. "-q" stands for quite compilation and is prefered since it does not clutter the terminal which is important since the game is played inside the terminal window.
+I usually add -q afterwards in the first command. "-q" stands for quiet compilation and is prefered since it does not clutter the terminal which is important since the game is played inside the terminal window.
