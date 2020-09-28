@@ -20,7 +20,7 @@ Then running the program.
 ```
 ./main 
 ```
-Finally, removing the compiled extraneous files after the game has been played with:
+Finally, removing the compiled extraneous files after the game has been played:
 ```
 gnatclean main.adb 
 ```
